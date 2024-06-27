@@ -63,7 +63,7 @@
 			});
 		};
 
-		let photoUrl = async () => {
+		let getPhotoUrl = async () => {
 			let fileName = getHash();
 			let files = await fetchSpherePhotosList();
 			
@@ -72,7 +72,7 @@
 		};
 
 		if(shouldRender()){		
-			let photoUrl = await photoUrl();
+			let photoUrl = await getPhotoUrl();
 			init(photoUrl);
 			animate();
 		}
