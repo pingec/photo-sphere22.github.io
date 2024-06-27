@@ -73,7 +73,7 @@
 
 		if(shouldRender()){		
 			let photoUrl = await photoUrl();
-			init();
+			init(photoUrl);
 			animate();
 		}
 		else{
@@ -94,7 +94,7 @@
 		//init();
 		//animate();
 
-		function init(photoUrl) {
+		async function init(photoUrl) {
 
 			var container, mesh;
 
