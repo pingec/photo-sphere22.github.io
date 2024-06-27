@@ -62,8 +62,10 @@
 				var geometry = new THREE.SphereGeometry( 500, 60, 40 );
 				geometry.applyMatrix( new THREE.Matrix4().makeScale( -1, 1, 1 ) );
 
+				let imgUrl = 'https://raw.githubusercontent.com/pingec/photo-sphere22.github.io/main/docs/PANO_20140202_154609.jpg';
+
 				var material = new THREE.MeshBasicMaterial( {
-					map: THREE.ImageUtils.loadTexture( 'PANO_20140220_165526.jpg' )
+					map: THREE.ImageUtils.loadTexture( imgUrl )
 				} );
 
 				mesh = new THREE.Mesh( geometry, material );
