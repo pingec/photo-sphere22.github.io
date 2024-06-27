@@ -63,7 +63,7 @@
 			});
 		};
 
-		let photoUrl = () => {
+		let photoUrl = async () => {
 			let fileName = getHash();
 			let files = await fetchSpherePhotosList();
 			
@@ -113,15 +113,9 @@
 			let imgUrl3 = 'https://raw.githubusercontent.com/pingec/photo-sphere22.github.io/main/docs/PXL_20240619_091303812.PHOTOSPHERE.jpg';
 			let imgUrl4 = 'https://raw.githubusercontent.com/pingec/photo-sphere22.github.io/main/docs/PXL_20240619_092326118.PHOTOSPHERE.jpg';
 
-<<<<<<< HEAD
 			var material = new THREE.MeshBasicMaterial({
 				map: THREE.ImageUtils.loadTexture(imgUrl2)
 			});
-=======
-				var material = new THREE.MeshBasicMaterial( {
-					map: THREE.ImageUtils.loadTexture( imgUrl3 )
-				} );
->>>>>>> ee74fb113cc82f8cbfc79b9dd28d3251af2bfbf5
 
 			mesh = new THREE.Mesh(geometry, material);
 
