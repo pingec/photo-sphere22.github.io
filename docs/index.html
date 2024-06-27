@@ -1,196 +1,224 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<title>Equirectangular panorama</title>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<style>
-			body {
-				background-color: #000000;
-				margin: 0px;
-				overflow: hidden;
-			}
 
-			#info {
-				position: absolute;
-				top: 0px; width: 100%;
-				color: #ffffff;
-				padding: 5px;
-				font-family:Monospace;
-				font-size:13px;
-				font-weight: bold;
-				text-align:center;
-			}
+<head>
+	<title>Equirectangular panorama</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<style>
+		body {
+			background-color: #000000;
+			margin: 0px;
+			overflow: hidden;
+		}
 
-			a {
-				color: #ffffff;
-			}
-		</style>
-	</head>
-	<body>
+		#info {
+			position: absolute;
+			top: 0px;
+			width: 100%;
+			color: #ffffff;
+			padding: 5px;
+			font-family: Monospace;
+			font-size: 13px;
+			font-weight: bold;
+			text-align: center;
+		}
 
-		<div id="container"></div>
-		<div id="info">Equirectangular panorama, photo by Matej.</div>
+		a {
+			color: #ffffff;
+		}
+	</style>
+</head>
 
-		<script src="three.min.js"></script>
+<body>
 
-		<script>
+	<div id="container"></div>
+	<div id="info">Equirectangular panorama, photo by Matej.</div>
 
-			var camera, scene, renderer;
+	<script src="three.min.js"></script>
 
-			var texture_placeholder,
+	<script>
+
+		let hash = window.location.hash.substring(1);
+
+		if (!hash) {
+
+			let url = "https://api.github.com/repos/pingec/photo-sphere22.github.io/contents/docs"
+			let response = await fetch(url);
+			let files = await response.json();
+
+			files.forEach(file => {
+				let name = file.name;
+				let path = file.path;
+				if (name.endsWith(".jpg")) {
+					console.log(file.download_url);
+
+					document.body.innerHTML += `<a href='${file.download_url}'>${file.name}</a><br/>`;
+				}
+			})
+		}
+		throw new Error("Do not render anything!");
+
+	</script>
+
+	<script>
+
+		var camera, scene, renderer;
+
+		var texture_placeholder,
 			isUserInteracting = false,
 			onMouseDownMouseX = 0, onMouseDownMouseY = 0,
 			lon = 0, onMouseDownLon = 0,
 			lat = 0, onMouseDownLat = 0,
 			phi = 0, theta = 0;
 
-			init();
-			animate();
+		init();
+		animate();
 
-			function init() {
+		function init() {
 
-				var container, mesh;
+			var container, mesh;
 
-				container = document.getElementById( 'container' );
+			container = document.getElementById('container');
 
-				camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1100 );
-				camera.target = new THREE.Vector3( 0, 0, 0 );
+			camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1100);
+			camera.target = new THREE.Vector3(0, 0, 0);
 
-				scene = new THREE.Scene();
+			scene = new THREE.Scene();
 
-				var geometry = new THREE.SphereGeometry( 500, 60, 40 );
-				geometry.applyMatrix( new THREE.Matrix4().makeScale( -1, 1, 1 ) );
+			var geometry = new THREE.SphereGeometry(500, 60, 40);
+			geometry.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
 
-				let imgUrl = 'https://raw.githubusercontent.com/pingec/photo-sphere22.github.io/main/docs/PANO_20140202_154609.jpg';
-				let imgUrl2 = 'https://raw.githubusercontent.com/pingec/photo-sphere22.github.io/main/docs/PXL_20240619_092520377.PHOTOSPHERE.jpg';
-				let imgUrl3 = 'https://raw.githubusercontent.com/pingec/photo-sphere22.github.io/main/docs/PXL_20240619_091303812.PHOTOSPHERE.jpg';
-				let imgUrl4 = 'https://raw.githubusercontent.com/pingec/photo-sphere22.github.io/main/docs/PXL_20240619_092326118.PHOTOSPHERE.jpg';
+			let imgUrl = 'https://raw.githubusercontent.com/pingec/photo-sphere22.github.io/main/docs/PANO_20140202_154609.jpg';
+			let imgUrl2 = 'https://raw.githubusercontent.com/pingec/photo-sphere22.github.io/main/docs/PXL_20240619_092520377.PHOTOSPHERE.jpg';
+			let imgUrl3 = 'https://raw.githubusercontent.com/pingec/photo-sphere22.github.io/main/docs/PXL_20240619_091303812.PHOTOSPHERE.jpg';
+			let imgUrl4 = 'https://raw.githubusercontent.com/pingec/photo-sphere22.github.io/main/docs/PXL_20240619_092326118.PHOTOSPHERE.jpg';
 
-				var material = new THREE.MeshBasicMaterial( {
-					map: THREE.ImageUtils.loadTexture( imgUrl2 )
-				} );
+			var material = new THREE.MeshBasicMaterial({
+				map: THREE.ImageUtils.loadTexture(imgUrl2)
+			});
 
-				mesh = new THREE.Mesh( geometry, material );
-				
-				scene.add( mesh );
+			mesh = new THREE.Mesh(geometry, material);
 
-				renderer = new THREE.WebGLRenderer();
-				renderer.setSize( window.innerWidth, window.innerHeight );
-				container.appendChild( renderer.domElement );
+			scene.add(mesh);
 
-				document.addEventListener( 'mousedown', onDocumentMouseDown, false );
-				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-				document.addEventListener( 'mouseup', onDocumentMouseUp, false );
-				document.addEventListener( 'mousewheel', onDocumentMouseWheel, false );
-				document.addEventListener( 'DOMMouseScroll', onDocumentMouseWheel, false);
+			renderer = new THREE.WebGLRenderer();
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			container.appendChild(renderer.domElement);
 
-				//
+			document.addEventListener('mousedown', onDocumentMouseDown, false);
+			document.addEventListener('mousemove', onDocumentMouseMove, false);
+			document.addEventListener('mouseup', onDocumentMouseUp, false);
+			document.addEventListener('mousewheel', onDocumentMouseWheel, false);
+			document.addEventListener('DOMMouseScroll', onDocumentMouseWheel, false);
 
-				window.addEventListener( 'resize', onWindowResize, false );
+			//
 
-			}
+			window.addEventListener('resize', onWindowResize, false);
 
-			function onWindowResize() {
+		}
 
-				camera.aspect = window.innerWidth / window.innerHeight;
-				camera.updateProjectionMatrix();
+		function onWindowResize() {
 
-				renderer.setSize( window.innerWidth, window.innerHeight );
+			camera.aspect = window.innerWidth / window.innerHeight;
+			camera.updateProjectionMatrix();
 
-			}
+			renderer.setSize(window.innerWidth, window.innerHeight);
 
-			function onDocumentMouseDown( event ) {
+		}
 
-				event.preventDefault();
+		function onDocumentMouseDown(event) {
 
-				isUserInteracting = true;
+			event.preventDefault();
 
-				onPointerDownPointerX = event.clientX;
-				onPointerDownPointerY = event.clientY;
+			isUserInteracting = true;
 
-				onPointerDownLon = lon;
-				onPointerDownLat = lat;
+			onPointerDownPointerX = event.clientX;
+			onPointerDownPointerY = event.clientY;
 
-			}
+			onPointerDownLon = lon;
+			onPointerDownLat = lat;
 
-			function onDocumentMouseMove( event ) {
+		}
 
-				if ( isUserInteracting === true ) {
+		function onDocumentMouseMove(event) {
 
-					lon = ( onPointerDownPointerX - event.clientX ) * 0.1 + onPointerDownLon;
-					lat = ( event.clientY - onPointerDownPointerY ) * 0.1 + onPointerDownLat;
+			if (isUserInteracting === true) {
 
-				}
+				lon = (onPointerDownPointerX - event.clientX) * 0.1 + onPointerDownLon;
+				lat = (event.clientY - onPointerDownPointerY) * 0.1 + onPointerDownLat;
 
 			}
 
-			function onDocumentMouseUp( event ) {
+		}
 
-				isUserInteracting = false;
+		function onDocumentMouseUp(event) {
 
-			}
+			isUserInteracting = false;
 
-			function onDocumentMouseWheel( event ) {
+		}
 
-				// WebKit
+		function onDocumentMouseWheel(event) {
 
-				if ( event.wheelDeltaY ) {
+			// WebKit
 
-					camera.fov -= event.wheelDeltaY * 0.05;
+			if (event.wheelDeltaY) {
+
+				camera.fov -= event.wheelDeltaY * 0.05;
 
 				// Opera / Explorer 9
 
-				} else if ( event.wheelDelta ) {
+			} else if (event.wheelDelta) {
 
-					camera.fov -= event.wheelDelta * 0.05;
+				camera.fov -= event.wheelDelta * 0.05;
 
 				// Firefox
 
-				} else if ( event.detail ) {
+			} else if (event.detail) {
 
-					camera.fov += event.detail * 1.0;
-
-				}
-
-				camera.updateProjectionMatrix();
+				camera.fov += event.detail * 1.0;
 
 			}
 
-			function animate() {
+			camera.updateProjectionMatrix();
 
-				requestAnimationFrame( animate );
-				update();
+		}
 
-			}
+		function animate() {
 
-			function update() {
+			requestAnimationFrame(animate);
+			update();
 
-				if ( isUserInteracting === false ) {
+		}
 
-					lon += 0.1;
+		function update() {
 
-				}
+			if (isUserInteracting === false) {
 
-				lat = Math.max( - 85, Math.min( 85, lat ) );
-				phi = THREE.Math.degToRad( 90 - lat );
-				theta = THREE.Math.degToRad( lon );
-
-				camera.target.x = 500 * Math.sin( phi ) * Math.cos( theta );
-				camera.target.y = 500 * Math.cos( phi );
-				camera.target.z = 500 * Math.sin( phi ) * Math.sin( theta );
-
-				camera.lookAt( camera.target );
-
-				/*
-				// distortion
-				camera.position.copy( camera.target ).negate();
-				*/
-
-				renderer.render( scene, camera );
+				lon += 0.1;
 
 			}
 
-		</script>
-	</body>
+			lat = Math.max(- 85, Math.min(85, lat));
+			phi = THREE.Math.degToRad(90 - lat);
+			theta = THREE.Math.degToRad(lon);
+
+			camera.target.x = 500 * Math.sin(phi) * Math.cos(theta);
+			camera.target.y = 500 * Math.cos(phi);
+			camera.target.z = 500 * Math.sin(phi) * Math.sin(theta);
+
+			camera.lookAt(camera.target);
+
+			/*
+			// distortion
+			camera.position.copy( camera.target ).negate();
+			*/
+
+			renderer.render(scene, camera);
+
+		}
+
+	</script>
+</body>
+
 </html>
