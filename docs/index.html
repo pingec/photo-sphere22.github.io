@@ -63,9 +63,12 @@
 				geometry.applyMatrix( new THREE.Matrix4().makeScale( -1, 1, 1 ) );
 
 				let imgUrl = 'https://raw.githubusercontent.com/pingec/photo-sphere22.github.io/main/docs/PANO_20140202_154609.jpg';
+				let imgUrl2 = 'https://raw.githubusercontent.com/pingec/photo-sphere22.github.io/main/docs/PXL_20240619_092520377.PHOTOSPHERE.jpg';
+				let imgUrl3 = 'https://raw.githubusercontent.com/pingec/photo-sphere22.github.io/main/docs/PXL_20240619_091303812.PHOTOSPHERE.jpg';
+				let imgUrl4 = 'https://raw.githubusercontent.com/pingec/photo-sphere22.github.io/main/docs/PXL_20240619_092326118.PHOTOSPHERE.jpg';
 
 				var material = new THREE.MeshBasicMaterial( {
-					map: THREE.ImageUtils.loadTexture( imgUrl )
+					map: THREE.ImageUtils.loadTexture( imgUrl2 )
 				} );
 
 				mesh = new THREE.Mesh( geometry, material );
