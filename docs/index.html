@@ -44,7 +44,7 @@
 
 		let fetchSpherePhotosList = async (owner = "pingec", repo = "photo-sphere22.github.io", path = "docs") => {
 			let url = `https://api.github.com/repos/${owner}/${repo}/contents/${[path]}`; // "https://api.github.com/repos/pingec/photo-sphere22.github.io/contents/docs";
-			
+
 			let response = await fetch(url);
 			let files = await response.json();
 			return files;
@@ -66,19 +66,21 @@
 		let getPhotoUrl = async () => {
 			let fileName = getHash();
 			let files = await fetchSpherePhotosList();
-			
+
 			let file = files.find(f => f.name == fileName);
 			return file.download_url;
 		};
 
-		if(shouldRender()){		
-			let photoUrl = await getPhotoUrl();
-			init(photoUrl);
-			animate();
-		}
-		else{
-			listAvailSpherePhotos();
-		}
+		(async function () {
+			if (shouldRender()) {
+				let photoUrl = await getPhotoUrl();
+				init(photoUrl);
+				animate();
+			}
+			else {
+				listAvailSpherePhotos();
+			}
+		})();
 
 		// BEGIN THREEJS CODE BELOW
 
