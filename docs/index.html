@@ -53,7 +53,7 @@
 				let path = file.path;
 				if (name.endsWith(".jpg")) {
 					console.log(file.download_url);
-					document.body.innerHTML += `<a href='${window.location.href}/#${file.name}'>${file.name}</a><br/>`;
+					document.body.innerHTML += `<br/><a href='${window.location.href}/#${file.name}'>${file.name}</a><br/>`;
 				}
 			});
 		};
