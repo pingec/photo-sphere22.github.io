@@ -38,12 +38,13 @@
 	<script src="three.min.js"></script>
 
 	<script>
+		let getHash = () => window.location.hash.substring(1);
 
-		let hash = window.location.hash.substring(1);
+		let shouldRender = () => !!getHash();
 
-		if (!hash) {
-
-			let url = "https://api.github.com/repos/pingec/photo-sphere22.github.io/contents/docs"
+		let listAvailSpherePhotos = async (owner = "pingec", repo = "photo-sphere22.github.io", path = "docs") => {
+			let url = `https://api.github.com/repos/${owner}/${repo}/contents/${[path]}`; // "https://api.github.com/repos/pingec/photo-sphere22.github.io/contents/docs";
+			
 			let response = await fetch(url);
 			let files = await response.json();
 
@@ -52,12 +53,20 @@
 				let path = file.path;
 				if (name.endsWith(".jpg")) {
 					console.log(file.download_url);
-
-					document.body.innerHTML += `<a href='${file.download_url}'>${file.name}</a><br/>`;
+					document.body.innerHTML += `<a href='${window.location.href}/#${file.name}'>${file.name}</a><br/>`;
 				}
-			})
+			});
+		};
+
+		if(shouldRender()){
+			init();
+			animate();
 		}
-		throw new Error("Do not render anything!");
+		else{
+			listAvailSpherePhotos();
+		}
+
+
 
 	</script>
 
@@ -72,8 +81,8 @@
 			lat = 0, onMouseDownLat = 0,
 			phi = 0, theta = 0;
 
-		init();
-		animate();
+		//init();
+		//animate();
 
 		function init() {
 
