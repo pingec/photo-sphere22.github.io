@@ -42,11 +42,16 @@
 
 		let shouldRender = () => !!getHash();
 
-		let listAvailSpherePhotos = async (owner = "pingec", repo = "photo-sphere22.github.io", path = "docs") => {
+		let fetchSpherePhotosList = async (owner = "pingec", repo = "photo-sphere22.github.io", path = "docs") => {
 			let url = `https://api.github.com/repos/${owner}/${repo}/contents/${[path]}`; // "https://api.github.com/repos/pingec/photo-sphere22.github.io/contents/docs";
 			
 			let response = await fetch(url);
 			let files = await response.json();
+			return files;
+		};
+
+		let listAvailSpherePhotos = async () => {
+			let files = await fetchSpherePhotosList();
 
 			files.forEach(file => {
 				let name = file.name;
@@ -58,15 +63,22 @@
 			});
 		};
 
-		if(shouldRender()){
+		let photoUrl = () => {
+			let fileName = getHash();
+			let files = await fetchSpherePhotosList();
+			
+			let file = files.find(f => f.name == fileName);
+			return file.download_url;
+		};
+
+		if(shouldRender()){		
+			let photoUrl = photoUrl();
 			init();
 			animate();
 		}
 		else{
 			listAvailSpherePhotos();
 		}
-
-
 
 	</script>
 
@@ -84,7 +96,7 @@
 		//init();
 		//animate();
 
-		function init() {
+		function init(photoUrl) {
 
 			var container, mesh;
 
