@@ -28,8 +28,8 @@
 
 		let shouldRender = () => !!getHash();
 
-		let fetchSpherePhotosList = async (owner = "pingec", repo = "photo-sphere22.github.io", path = "docs") => {
-			let url = `https://api.github.com/repos/${owner}/${repo}/contents/${[path]}`; // "https://api.github.com/repos/pingec/photo-sphere22.github.io/contents/docs";
+		let fetchSpherePhotosList = async (owner = "pingec", repo = "photosphere", path = "docs") => {
+			let url = `https://api.github.com/repos/${owner}/${repo}/contents/${[path]}`; // "https://api.github.com/repos/pingec/photosphere/contents/docs";
 
 			let response = await fetch(url);
 			let files = await response.json();
